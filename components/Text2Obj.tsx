@@ -8,28 +8,59 @@ import {
   OrbitControls,
 } from "@react-three/drei";
 
-interface TextInputObjectProps {
-  // Props go here (if any)
-}
+interface TextInputObjectProps {}
+
+interface TextInputObjectState {}
+
+const DIMENSIONS_REGEX = /\d+/g;
+const COLORS_REGEX = /#[0-9a-f]{6}/gi;
+const OBJECT_TYPE_REGEX = /box|sphere|torus/i;
 
 const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
   const [text, setText] = useState("");
   const [object, setObject] = useState<THREE.Object3D | null>(null);
 
-  const generateObject = (input: string) => {
+  const generateObject = (input: string): void => {
     // Parse the input text to extract the dimensions and colors for the cube
-    const dimensions = input.match(/\d+/g)?.map(Number) || [1, 1, 1];
-    const colors = input.match(/#[0-9a-f]{6}/gi) || ["#ffffff"];
+    const dimensions = input.match(DIMENSIONS_REGEX)?.map(Number) || [1, 1, 1];
+    const colors = input.match(COLORS_REGEX) || ["#ffffff"];
+    const objectType = input.match(OBJECT_TYPE_REGEX)?.[0] || "";
 
+    let objectGeometry = new THREE.Object3D();
+
+    // Create the object using the appropriate three.js geometry and material
+    switch (typeof objectType === "string" ? objectType : "") {
+      case "box":
+        objectGeometry = new THREE.Mesh(
+          new THREE.BoxGeometry(...dimensions),
+          new THREE.MeshBasicMaterial({ color: colors[0] })
+        );
+        break;
+      case "sphere":
+        objectGeometry = new THREE.Mesh(
+          new THREE.SphereGeometry(dimensions[0], 32, 32),
+          new THREE.MeshBasicMaterial({ color: colors[0] })
+        );
+        break;
+      case "torus":
+        objectGeometry = new THREE.Mesh(
+          new THREE.TorusGeometry(dimensions[0], dimensions[1], 32, 32),
+          new THREE.MeshBasicMaterial({ color: colors[0] })
+        );
+        break;
+      default:
+        objectGeometry = new THREE.Object3D();
+        break;
+    }
+    //#035efc color for testing
     // Create a 3D cube with the extracted dimensions and colors
-    const newObject = new THREE.Object3D();
-    newObject.add(
+    objectGeometry.add(
       new THREE.Mesh(
-        new THREE.BoxGeometry(...dimensions),
+        new THREE.BufferGeometry(),
         new THREE.MeshBasicMaterial({ color: colors[0] })
       )
     );
-    setObject(newObject);
+    setObject(objectGeometry);
   };
 
   return (
