@@ -16,6 +16,25 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Text2Obj />
+      <Overlay />
+    </>
+  );
+}
+
+function Overlay() {
+  return (
+    <>
+      <div
+        style={{
+          color: "#808080",
+          position: "absolute",
+          top: 40,
+          left: 40,
+          fontSize: "13px",
+        }}
+      >
+        GenesisNLO — by Andreas E. Eriksen
+      </div>
     </>
   );
 }
