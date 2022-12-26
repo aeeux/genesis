@@ -3,10 +3,24 @@ import { Canvas, useThree, extend, useFrame } from "react-three-fiber";
 import * as THREE from "three";
 import Image from "next/image";
 import {
+  AccumulativeShadows,
+  Backdrop,
+  BakeShadows,
+  Cloud,
+  ContactShadows,
   Environment,
+  Float,
+  Lightformer,
   MeshReflectorMaterial,
   OrbitControls,
+  RandomizedLight,
+  Shadow,
+  Sky,
+  Stage,
+  Stars,
 } from "@react-three/drei";
+import Porsche from "../components/Porsche";
+import { LayerMaterial, Color, Depth } from "lamina";
 
 interface TextInputObjectProps {}
 
@@ -43,6 +57,12 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
         );
         break;
       case "torus":
+        objectGeometry = new THREE.Mesh(
+          new THREE.TorusGeometry(dimensions[0], dimensions[1], 32, 32),
+          new THREE.MeshBasicMaterial({ color: colors[0] })
+        );
+        break;
+      case "porsche":
         objectGeometry = new THREE.Mesh(
           new THREE.TorusGeometry(dimensions[0], dimensions[1], 32, 32),
           new THREE.MeshBasicMaterial({ color: colors[0] })
@@ -95,41 +115,91 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
         </p>
       </div>
       <Canvas
-        className=""
         dpr={[1, 1.5]}
         shadows
-        camera={{ position: [-18, 15, 18], fov: 35 }}
+        camera={{ position: [-10, 0, 15], fov: 30 }}
         gl={{ alpha: false }}
       >
-        <OrbitControls />
-        <color attach="background" args={["#343541"]} />
-        <ambientLight intensity={0.2} />
-        <directionalLight
-          castShadow
-          intensity={0.3}
-          position={[10, 6, 0]}
-          shadow-mapSize={[1024, 1024]}
+        <OrbitControls makeDefault />
+        <Porsche
+          scale={1.6}
+          position={[-0.5, -0.18, 0]}
+          rotation={[0, Math.PI / 5, 0]}
         />
         {object && <primitive object={object} />}
-        <Suspense fallback={null}>
-          {/* <CameraAnimation /> */}
-          <mesh position={[0, -5.3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-            <planeGeometry args={[2000, 2000]} />
-            <MeshReflectorMaterial
-              blur={[1000, 50]}
-              resolution={1024}
-              mixBlur={1}
-              mixStrength={5}
-              depthScale={0.8}
-              minDepthThreshold={0.92}
-              color="#343541"
-              metalness={0.9}
-              roughness={1}
-              mirror={0}
+        <spotLight
+          position={[0, 15, 0]}
+          angle={0.3}
+          penumbra={1}
+          castShadow
+          intensity={2}
+          shadow-bias={-0.0001}
+        />
+        <ambientLight intensity={0.2} />
+        <ContactShadows
+          resolution={1024}
+          frames={1}
+          position={[0, -1.16, 0]}
+          scale={10}
+          blur={3}
+          opacity={1}
+          far={10}
+        />
+        {/* Renders contents "live" into a HDRI environment (scene.environment). */}
+        <Environment frames={Infinity} resolution={256}>
+          {/* Ceiling */}
+          <Lightformer
+            intensity={0.75}
+            rotation-x={Math.PI / 2}
+            position={[0, 5, -9]}
+            scale={[10, 10, 1]}
+          />
+          {/* Sides */}
+          <Lightformer
+            intensity={4}
+            rotation-y={Math.PI / 2}
+            position={[-5, 1, -1]}
+            scale={[20, 0.1, 1]}
+          />
+          <Lightformer
+            rotation-y={Math.PI / 2}
+            position={[-5, -1, -1]}
+            scale={[20, 0.5, 1]}
+          />
+          <Lightformer
+            rotation-y={-Math.PI / 2}
+            position={[10, 1, 0]}
+            scale={[20, 1, 1]}
+          />
+          {/* Accent (red) */}
+          <Float speed={5} floatIntensity={2} rotationIntensity={2}>
+            <Lightformer
+              form="ring"
+              color="red"
+              intensity={1}
+              scale={10}
+              position={[-15, 4, -18]}
+              target={[0, 0, 0]}
             />
+          </Float>
+          {/* Background */}
+          <mesh scale={100}>
+            <sphereGeometry args={[1, 64, 64]} />
+            <LayerMaterial side={THREE.BackSide}>
+              <Color color="#444" alpha={1} mode="normal" />
+              <Depth
+                colorA="blue"
+                colorB="black"
+                alpha={0.5}
+                mode="normal"
+                near={0}
+                far={300}
+                origin={[100, 100, 100]}
+              />
+            </LayerMaterial>
           </mesh>
-          <Environment preset="warehouse" />
-        </Suspense>
+        </Environment>
+        <BakeShadows />
       </Canvas>
     </>
   );
