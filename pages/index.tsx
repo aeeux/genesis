@@ -28,12 +28,42 @@ function Overlay() {
         style={{
           color: "#808080",
           position: "absolute",
-          top: 40,
-          left: 40,
+          top: 0,
+          paddingTop: 20,
+          left: 0,
           fontSize: "13px",
         }}
+        className="h-screen bg-white/5 px-6 border-r border-white/10"
       >
-        GenesisNLO — by Andreas E. Eriksen
+        GenesisNLO — by{" "}
+        <a
+          className="text-blue-500 font-medium underline"
+          href="https://aeeriksen.com/"
+          target="_blank"
+        >
+          Andreas E. Eriksen
+        </a>
+        <div className="text-white">
+          <section className="my-5">
+            <h2 className="text-lg"> List of Supported Commands</h2>
+            <p className="text-sm my-1 mt-5">Command pattern:</p>
+            <p className="text-white/60">
+              Object — #808080 — Height/Width/Depth
+            </p>
+          </section>
+          <section>
+            <p className="text-sm my-2 mt-12">Examples:</p>
+            <p className="text-white/60">box #3EE835 10-10-10</p>
+            <p className="text-white/60">sphere</p>
+            <p className="text-white/60">torus</p>
+          </section>
+          <section className="my-5">
+            <h2 className="text-lg">Not Supported Yet</h2>
+            <p className="text-white/60 my-2">
+              ❌ Capital Letters in the Object Name
+            </p>
+          </section>
+        </div>
       </div>
     </>
   );
