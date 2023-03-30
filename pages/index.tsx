@@ -40,6 +40,7 @@ function Overlay() {
           className="text-blue-500 font-medium underline"
           href="https://aeeriksen.com/"
           target="_blank"
+          rel="noreferrer"
         >
           Andreas E. Eriksen
         </a>
