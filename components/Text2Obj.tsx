@@ -26,7 +26,7 @@ interface TextInputObjectProps {}
 
 interface TextInputObjectState {}
 
-const DIMENSIONS_REGEX = /\d+/g;
+const DIMENSIONS_REGEX = /\d+(?:[.,]\d+)?(?:\s*[xX,*]\s*\d+(?:[.,]\d+)?){2}/;
 const COLORS_REGEX = /#[0-9a-f]{6}/gi;
 const OBJECT_TYPE_REGEX = /box|sphere|torus/i;
 
@@ -42,30 +42,36 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
 
     let objectGeometry = new THREE.Object3D();
 
+    const material = new THREE.MeshStandardMaterial({
+      color: colors[0],
+      roughness: 0.8,
+      metalness: 0.8,
+    });
+
     // Create the object using the appropriate three.js geometry and material
     switch (typeof objectType === "string" ? objectType : "") {
       case "box":
         objectGeometry = new THREE.Mesh(
           new THREE.BoxGeometry(...dimensions),
-          new THREE.MeshBasicMaterial({ color: colors[0] })
+          material
         );
         break;
       case "sphere":
         objectGeometry = new THREE.Mesh(
           new THREE.SphereGeometry(dimensions[0], 32, 32),
-          new THREE.MeshBasicMaterial({ color: colors[0] })
+          material
         );
         break;
       case "torus":
         objectGeometry = new THREE.Mesh(
           new THREE.TorusGeometry(dimensions[0], dimensions[1], 32, 32),
-          new THREE.MeshBasicMaterial({ color: colors[0] })
+          material
         );
         break;
       case "porsche":
         objectGeometry = new THREE.Mesh(
           new THREE.TorusGeometry(dimensions[0], dimensions[1], 32, 32),
-          new THREE.MeshBasicMaterial({ color: colors[0] })
+          material
         );
         break;
       default:
@@ -83,6 +89,17 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
     setObject(objectGeometry);
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      generateObject(text);
+    }
+  };
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    const input = event.clipboardData.getData("text");
+    generateObject(input);
+  };
+
   return (
     <>
       <div className="absolute text-center z-10 bottom-6 justify-center right-0 left-0">
@@ -93,6 +110,8 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
               value={text}
               className="m-0 w-full resize-none border-0 p-0 pr-7 border-transparent bg-transparent outline-none"
               onChange={(e) => setText(e.target.value)}
+              onKeyDown={handleKeyPress}
+              onPaste={handlePaste}
             />
             <button
               className="absolute p-1 rounded-md text-gray-500 bottom-1.5 right-1 md:bottom-2.5 md:right-2 hover:bg-gray-100 dark:hover:text-gray-400 dark:hover:bg-gray-900 disabled:hover:bg-transparent dark:disabled:hover:bg-transparent"
@@ -117,25 +136,23 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
       <Canvas
         dpr={[1, 1.5]}
         shadows
-        camera={{ position: [-10, 0, 15], fov: 30 }}
+        camera={{ position: [-8, 2, -3], fov: 30 }}
         gl={{ alpha: false }}
       >
         <OrbitControls makeDefault />
-        <Porsche
+        {/* <Porsche
           scale={1.6}
           position={[-0.5, -0.18, 0]}
           rotation={[0, Math.PI / 5, 0]}
-        />
+        /> */}
         {object && <primitive object={object} />}
-        <spotLight
-          position={[0, 15, 0]}
-          angle={0.3}
-          penumbra={1}
-          castShadow
-          intensity={2}
-          shadow-bias={-0.0001}
+        <ambientLight color="#ffffff" intensity={1} />
+        <directionalLight
+          color="#ffffff"
+          intensity={0.2}
+          position={[0, 10, 10]}
         />
-        <ambientLight intensity={0.2} />
+
         <ContactShadows
           resolution={1024}
           frames={1}
@@ -149,55 +166,18 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
         <Environment frames={Infinity} resolution={256}>
           {/* Ceiling */}
           <Lightformer
-            intensity={0.75}
+            intensity={1.75}
             rotation-x={Math.PI / 2}
             position={[0, 5, -9]}
-            scale={[10, 10, 1]}
+            scale={[50, 20, 1]}
           />
           {/* Sides */}
           <Lightformer
-            intensity={4}
+            intensity={20}
             rotation-y={Math.PI / 2}
             position={[-5, 1, -1]}
-            scale={[20, 0.1, 1]}
+            scale={[20, 0.07, 10]}
           />
-          <Lightformer
-            rotation-y={Math.PI / 2}
-            position={[-5, -1, -1]}
-            scale={[20, 0.5, 1]}
-          />
-          <Lightformer
-            rotation-y={-Math.PI / 2}
-            position={[10, 1, 0]}
-            scale={[20, 1, 1]}
-          />
-          {/* Accent (red) */}
-          <Float speed={5} floatIntensity={2} rotationIntensity={2}>
-            <Lightformer
-              form="ring"
-              color="red"
-              intensity={1}
-              scale={10}
-              position={[-15, 4, -18]}
-              target={[0, 0, 0]}
-            />
-          </Float>
-          {/* Background */}
-          <mesh scale={100}>
-            <sphereGeometry args={[1, 64, 64]} />
-            <LayerMaterial side={THREE.BackSide}>
-              <Color color="#444" alpha={1} mode="normal" />
-              <Depth
-                colorA="blue"
-                colorB="black"
-                alpha={0.5}
-                mode="normal"
-                near={0}
-                far={300}
-                origin={[100, 100, 100]}
-              />
-            </LayerMaterial>
-          </mesh>
         </Environment>
         <BakeShadows />
       </Canvas>
