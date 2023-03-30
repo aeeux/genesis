@@ -53,13 +53,13 @@ function Overlay() {
             </p>
           </section>
           <section>
-            <p className="text-sm my-2 mt-12">Examples:</p>
+            <p className="text-sm my-2">Examples:</p>
             <p className="text-white/60">box #fff 10-10-10</p>
             <p className="text-white/60">sphere</p>
             <p className="text-white/60">torus</p>
           </section>
-          <section className="my-5">
-            <h2 className="text-lg">Not Supported Yet</h2>
+          <section className="my-12">
+            <h2 className="text-md">Not Supported Yet</h2>
             <p className="text-white/60 my-2">
               ❌ Capital Letters in the Object Name
             </p>
