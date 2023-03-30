@@ -53,7 +53,7 @@ function Overlay() {
           </section>
           <section>
             <p className="text-sm my-2 mt-12">Examples:</p>
-            <p className="text-white/60">box #3EE835 10-10-10</p>
+            <p className="text-white/60">box #fff 10-10-10</p>
             <p className="text-white/60">sphere</p>
             <p className="text-white/60">torus</p>
           </section>
