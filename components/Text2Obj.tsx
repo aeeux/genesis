@@ -128,8 +128,7 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
           </div>
         </div>
         <p className="mt-3 text-white/40 text-sm">
-          GenesisNLO Dec 26 Version. Free Research Preview. Our goal is to make
-          AI systems more natural and safe to interact with. Your feedback will
+          GenesisNLO Dec 26 Version. Free Research Preview. Your feedback will
           help us improve.
         </p>
       </div>
