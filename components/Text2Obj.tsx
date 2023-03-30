@@ -139,16 +139,16 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
         gl={{ alpha: false }}
       >
         <OrbitControls makeDefault />
-        {/* <Porsche
+        <Porsche
           scale={1.6}
           position={[-0.5, -0.18, 0]}
           rotation={[0, Math.PI / 5, 0]}
-        /> */}
+        />
         {object && <primitive object={object} />}
         <ambientLight color="#ffffff" intensity={1} />
         <directionalLight
           color="#ffffff"
-          intensity={0.7}
+          intensity={1.4}
           position={[15, 10, 10]}
         />
         <BakeShadows />
