@@ -148,26 +148,10 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
         <ambientLight color="#ffffff" intensity={1} />
         <directionalLight
           color="#ffffff"
-          intensity={0.2}
-          position={[0, 10, 10]}
+          intensity={0.7}
+          position={[15, 10, 10]}
         />
         {/* Renders contents "live" into a HDRI environment (scene.environment). */}
-        <Environment frames={Infinity} resolution={256}>
-          {/* Ceiling */}
-          <Lightformer
-            intensity={1.75}
-            rotation-x={Math.PI / 2}
-            position={[0, 5, -9]}
-            scale={[50, 20, 1]}
-          />
-          {/* Sides */}
-          <Lightformer
-            intensity={20}
-            rotation-y={Math.PI / 2}
-            position={[-5, 1, -1]}
-            scale={[20, 0.07, 10]}
-          />
-        </Environment>
         <BakeShadows />
       </Canvas>
     </>
