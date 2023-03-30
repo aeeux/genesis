@@ -151,7 +151,6 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
           intensity={0.7}
           position={[15, 10, 10]}
         />
-        {/* Renders contents "live" into a HDRI environment (scene.environment). */}
         <BakeShadows />
       </Canvas>
     </>
