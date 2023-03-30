@@ -151,16 +151,6 @@ const TextInputObject: React.FC<TextInputObjectProps> = (props) => {
           intensity={0.2}
           position={[0, 10, 10]}
         />
-
-        <ContactShadows
-          resolution={1024}
-          frames={1}
-          position={[0, -1.16, 0]}
-          scale={10}
-          blur={3}
-          opacity={1}
-          far={10}
-        />
         {/* Renders contents "live" into a HDRI environment (scene.environment). */}
         <Environment frames={Infinity} resolution={256}>
           {/* Ceiling */}
