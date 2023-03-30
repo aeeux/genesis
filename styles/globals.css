@@ -9,7 +9,3 @@ canvas {
   pointer-events: none;
   overflow: hidden;
 }
-
-body {
-  background: black;
-}
